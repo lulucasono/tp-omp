@@ -24,8 +24,8 @@ int main(int argc, char **argv)
     }
 
     // NB_MAX will be used as an arg
-    int vector1[NB_MAX];
-    int vector2[NB_MAX];
+    int vector1[nbMax];
+    int vector2[nbMax];
 
     srand(time(NULL));
 
@@ -35,15 +35,27 @@ int main(int argc, char **argv)
         vector2[i] = rand();
     }
 
-    display(vector1, NB_MAX);
-    display(vector2, NB_MAX);
+    display(vector1, nbMax);
+    display(vector2, nbMax);
     
+    int result[nbMax];
+    
+
     high_resolution_clock::time_point start = high_resolution_clock::now();
-    long sumResult = sum(vector1, NB_MAX);
+    add(vector1, vector2, result, nbMax);
     high_resolution_clock::time_point end = high_resolution_clock::now();
     nanoseconds time_duration = duration_cast<nanoseconds>(end -start);
-    std::cout << "Duration(ns) NB_MAX" << std::endl << time_duration.count() << " " << nbMax << std::endl;
-    std::cout << "Vector 1 sum : " << sumResult << std::endl;
+    std::cout << "Duration NB_MAX" << std::endl << time_duration.count() << " " << nbMax << std::endl;
+    std::cout << "Addition result : " << std::endl;
+    display(result, nbMax);
+
+    high_resolution_clock::time_point sumStart = high_resolution_clock::now();
+    long sumResult = sum(vector1, nbMax);
+    high_resolution_clock::time_point sumEnd = high_resolution_clock::now();
+    time_duration = duration_cast<nanoseconds>(sumEnd -sumStart);
+    std::cout << "Duration NB_MAX" << std::endl << time_duration.count() << " " << nbMax << std::endl;
+    std::cout << "Vector 1 sum result : " << sumResult << std::endl;
+
     return 0;
 }
 
@@ -67,4 +79,14 @@ long sum(int *vec, int length)
     }
 
     return sum;
+}
+
+void add(int *vec1, int *vec2, int *ret, int length)
+{
+    int i;
+    
+    for (i = 0; i < length; i++)
+    {
+        ret[i] = vec1[i] + vec2[i];
+    }
 }
