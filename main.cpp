@@ -6,12 +6,13 @@
 #include <cstdlib>
 #include <omp.h>
 
-#define NB_MAX 100
+
 
 using namespace std::chrono;
-
 int main(int argc, char **argv)
 {
+typedef std::chrono::high_resolution_clock clock;
+typedef std::chrono::high_resolution_clock::time_point time_point;
     int i;
 
     int nbCore;
@@ -34,7 +35,7 @@ int main(int argc, char **argv)
 
     srand(13131313);
 
-    for (i = 0; i < NB_MAX; i++)
+    for (i = 0; i < nbMax; i++)
     {
         vector1[i] = rand();
         vector2[i] = rand();
@@ -46,24 +47,49 @@ int main(int argc, char **argv)
     int result[nbMax];
     
 
-    high_resolution_clock::time_point start = high_resolution_clock::now();
+    time_point start = clock::now();
     add(vector1, vector2, result, nbMax);
-    high_resolution_clock::time_point end = high_resolution_clock::now();
+    time_point end = clock::now();
     nanoseconds time_duration = duration_cast<nanoseconds>(end -start);
+    std::cout<<"Vector addition"<<std::endl;
     std::cout << "Duration NB_MAX cores" << std::endl << time_duration.count() << " " << nbMax << " " << nbCore << std::endl;
+    #ifdef MEP
     std::cout << "Addition result : " << std::endl;
     display(result, nbMax);
+    #endif
 
-    high_resolution_clock::time_point sumStart = high_resolution_clock::now();
+    time_point sumStart = clock::now();
     long sumResult = sum(vector1, nbMax);
-    high_resolution_clock::time_point sumEnd = high_resolution_clock::now();
+    time_point sumEnd = clock::now();
     time_duration = duration_cast<nanoseconds>(sumEnd -sumStart);
+    std::cout<<"Single vector sum" << std::endl;
     std::cout << "Duration NB_MAX cores" << std::endl << time_duration.count() << " " << nbMax << " " << nbCore << std::endl;
+    #ifdef MEP
     std::cout << "Vector 1 sum result : " << sumResult << std::endl;
+    #endif
 
+    std::cout<<"para add"<<std::endl;
+    int paraResult[nbMax];
+    time_point paraAddStart = clock::now();
+    paraAdd(vector1,vector2, result, nbMax,nbCore);
+    time_point paraAddEnd = clock::now();
+    time_duration = duration_cast<nanoseconds>(paraAddEnd - paraAddStart);
+    std::cout<<"Vector addition"<<std::endl;
+    std::cout << "Duration NB_MAX cores" << std::endl << time_duration.count() << " " << nbMax << " " << nbCore << std::endl;
+    #ifdef MEP
+    std::cout << "Addition result : " << std::endl;
+    display(paraResult, nbMax);
+    #endif
     return 0;
 }
 
+void paraAdd( int *vec1, int *vec2, int *ret, int length, int nbCore){
+    #pragma omp NUM_THREADS(nbCore) parallel for shared(*ret)
+    for (int i = 0; i < length; i++)
+    {
+    	ret[i] = vec1[i] + vec2[i];
+    }
+}
 void display(int *vec, int length)
 {
     int i;
@@ -93,12 +119,5 @@ void add(int *vec1, int *vec2, int *ret, int length)
     for (i = 0; i < length; i++)
     {
         ret[i] = vec1[i] + vec2[i];
-    }
-}
-void paraAdd( int *vec1, int *vec2, int *ret, int length, int nbCore){
-    #pragma omp parallel for shared(ret)
-    for (int i = 0; i < length; i++)
-    {
-    	ret[i] = vec1[i] + vec2[i];
     }
 }

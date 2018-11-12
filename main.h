@@ -16,4 +16,9 @@ long sum(int *vec, int length);
  */
 void add(int *vec1, int *vec2, int *ret, int length);
 
+/**
+ * Somme de deux vecteurs, le vecteur ret doit être initialise pour recevoir le resultat
+ */
+void paraAdd(int *vec1, int *vec2, int *ret, int length, int nbCore);
+
 #endif // MAIN_H
