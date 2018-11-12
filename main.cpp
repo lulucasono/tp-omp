@@ -12,15 +12,18 @@ using namespace std::chrono;
 int main(int argc, char **argv)
 {
     int i;
-    
-    int nbMax = NB_MAX;
-    if(argc < 2)
+
+    int nbCore;
+    int nbMax;
+
+    if(argc < 3)
     {
-    	// nothing
+    	std::cout<<"usage : app [number of cores] [array size]"<<std::endl;
     }
     else
     {
-    	nbMax = std::stoi(argv[1]);
+	nbCore = std::stoi(argv[1]);
+    	nbMax = std::stoi(argv[2]);
     }
 
     // NB_MAX will be used as an arg
@@ -44,15 +47,15 @@ int main(int argc, char **argv)
     high_resolution_clock::time_point start = high_resolution_clock::now();
     add(vector1, vector2, result, nbMax);
     high_resolution_clock::time_point end = high_resolution_clock::now();
-    duration<long> time_duration = duration_cast<duration<long>>(end -start);
-    std::cout << "Addition Duration NB_MAX" << std::endl << time_duration.count() << " " << nbMax << std::endl;
+    nanoseconds time_duration = duration_cast<nanoseconds>(end -start);
+    std::cout << "Addition Duration NB_MAX" << std::endl << time_duration.count() << " " << nbMax << std::endl;e31
     std::cout << "Addition result : " << std::endl;
     // display(result, nbMax);
 
     high_resolution_clock::time_point sumStart = high_resolution_clock::now();
     long sumResult = sum(vector1, nbMax);
     high_resolution_clock::time_point sumEnd = high_resolution_clock::now();
-    time_duration = duration_cast<duration<long>>(sumEnd -sumStart);
+    time_duration = duration_cast<nanoseconds>(sumEnd -sumStart);
     std::cout << "Sum Duration NB_MAX" << std::endl << time_duration.count() << " " << nbMax << std::endl;
     // std::cout << "Vector 1 sum result : " << sumResult << std::endl;
 
