@@ -45,16 +45,16 @@ int main(int argc, char **argv)
     add(vector1, vector2, result, nbMax);
     high_resolution_clock::time_point end = high_resolution_clock::now();
     duration<long> time_duration = duration_cast<duration<long>>(end -start);
-    std::cout << "Duration NB_MAX" << std::endl << time_duration.count() << " " << nbMax << std::endl;
+    std::cout << "Addition Duration NB_MAX" << std::endl << time_duration.count() << " " << nbMax << std::endl;
     std::cout << "Addition result : " << std::endl;
-    display(result, nbMax);
+    // display(result, nbMax);
 
     high_resolution_clock::time_point sumStart = high_resolution_clock::now();
     long sumResult = sum(vector1, nbMax);
     high_resolution_clock::time_point sumEnd = high_resolution_clock::now();
     time_duration = duration_cast<duration<long>>(sumEnd -sumStart);
-    std::cout << "Duration NB_MAX" << std::endl << time_duration.count() << " " << nbMax << std::endl;
-    std::cout << "Vector 1 sum result : " << sumResult << std::endl;
+    std::cout << "Sum Duration NB_MAX" << std::endl << time_duration.count() << " " << nbMax << std::endl;
+    // std::cout << "Vector 1 sum result : " << sumResult << std::endl;
 
     return 0;
 }
