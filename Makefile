@@ -4,4 +4,4 @@ clean:
 mep: main.cpp main.h
 	g++ main.cpp -o mep -DMEP=1 -fopenmp
 main: main.cpp main.h
-	g++ main.cpp -o mep -fopenmp
+	g++ main.cpp -o main -fopenmp

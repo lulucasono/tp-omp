@@ -42,56 +42,52 @@ int main(int argc, char **argv)
         vector2[i] = rand();
     }
 
-    display(vector1, nbMax);
-    display(vector2, nbMax);
-
-    int result[nbMax];
-
-    time_point start = clock::now();
-    add(vector1, vector2, result, nbMax);
-    time_point end = clock::now();
-    nanoseconds time_duration = duration_cast<nanoseconds>(end -start);
-    std::cout<<"Vector addition"<<std::endl;
-    std::cout << "Duration NB_MAX cores" << std::endl << time_duration.count() << " " << nbMax << " " << nbCore << std::endl;
-    #ifdef MEP
-    std::cout << "Addition result : " << std::endl;
-    display(result, nbMax);
-    #endif
-
-    time_point sumStart = clock::now();
-    long sumResult = sum(vector1, nbMax);
-    time_point sumEnd = clock::now();
-    time_duration = duration_cast<nanoseconds>(sumEnd -sumStart);
-    std::cout<<"Single vector sum" << std::endl;
-    std::cout << "Duration NB_MAX cores" << std::endl << time_duration.count() << " " << nbMax << " " << nbCore << std::endl;
-    #ifdef MEP
-    std::cout << "Vector 1 sum result : " << sumResult << std::endl;
-    #endif
+	std::cout<<"sequential execution"<<std::endl;
+	int seqResult[nbMax];
+	time_point seqStart = clock::now();
+	add(vector1,vector2,seqResult,nbMax);
+	time_point seqEnd = clock::now();
 
     std::cout<<"para add"<<std::endl;
     int paraResult[nbMax];
     time_point paraAddStart = clock::now();
-    paraAdd(vector1,vector2, result, nbMax);
+    paraAdd(vector1,vector2, seqResult, nbMax);
     time_point paraAddEnd = clock::now();
-    #ifdef MEP
-    display(vector1, nbMax);
-    display(vector2, nbMax);
-    #endif
-    time_duration = duration_cast<nanoseconds>(paraAddEnd - paraAddStart);
+
+    nanoseconds time_duration = duration_cast<nanoseconds>(paraAddEnd - paraAddStart);
     std::cout<<"Vector addition"<<std::endl;
     std::cout << "Duration NB_MAX cores" << std::endl << time_duration.count() << " " << nbMax << " " << nbCore << std::endl;
     #ifdef MEP
     std::cout << "Addition result : " << std::endl;
     display(paraResult, nbMax);
     #endif
+	if(cpVec(seqResult,paraResult, nbMax))
+	{
+		std::cout<<"Ok"<<std::endl;
+	}
+	else
+	{
+		std::cout<<"Not Ok"<<std::endl;
+	}
     return 0;
 }
-
-void paraAdd( const int *vec1, const int *vec2, int *ret, const int length){
+bool cpVec(const int *vec1, const int *vec2, const int length)
+{
+	for(int i = 0 ; i< length; i++)
+	{
+		if(vec1[i] != vec2[i])
+		{
+			return false;
+		}
+	}
+	return true;
+}
+void paraAdd( const int *vec1, const int *vec2, int *ret, const int length)
+{
     #pragma omp parallel for
     for (int i = 0; i < length; i++)
     {
-	ret[i] = vec1[i] + vec2[i];
+		ret[i] = vec1[i] + vec2[i];
     }
 }
 void display(int *vec, int length)
