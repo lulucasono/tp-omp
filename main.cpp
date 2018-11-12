@@ -41,8 +41,8 @@ int main(int argc, char **argv)
     high_resolution_clock::time_point start = high_resolution_clock::now();
     long sumResult = sum(vector1, NB_MAX);
     high_resolution_clock::time_point end = high_resolution_clock::now();
-    duration<long> time_duration = duration_cast<duration<long>>(end -start);
-    std::cout << "Duration NB_MAX" << std::endl << time_duration.count() << " " << nbMax << std::endl;
+    nanoseconds time_duration = duration_cast<nanoseconds>(end -start);
+    std::cout << "Duration(ns) NB_MAX" << std::endl << time_duration.count() << " " << nbMax << std::endl;
     std::cout << "Vector 1 sum : " << sumResult << std::endl;
     return 0;
 }
