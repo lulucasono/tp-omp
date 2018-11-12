@@ -12,15 +12,18 @@ using namespace std::chrono;
 int main(int argc, char **argv)
 {
     int i;
-    
-    int nbMax = NB_MAX;
-    if(argc < 2)
+
+    int nbCore;
+    int nbMax;
+
+    if(argc < 3)
     {
-    	// nothing
+    	std::cout<<"usage : app [number of cores] [array size]"<<std::endl;
     }
     else
     {
-    	nbMax = std::stoi(argv[1]);
+	nbCore = std::stoi(argv[1]);
+    	nbMax = std::stoi(argv[2]);
     }
 
     // NB_MAX will be used as an arg
