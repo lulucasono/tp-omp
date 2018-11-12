@@ -48,7 +48,7 @@ int main(int argc, char **argv)
     add(vector1, vector2, result, nbMax);
     high_resolution_clock::time_point end = high_resolution_clock::now();
     nanoseconds time_duration = duration_cast<nanoseconds>(end -start);
-    std::cout << "Duration NB_MAX" << std::endl << time_duration.count() << " " << nbMax << std::endl;
+    std::cout << "Duration NB_MAX cores" << std::endl << time_duration.count() << " " << nbMax << " " << nbCore << std::endl;
     std::cout << "Addition result : " << std::endl;
     display(result, nbMax);
 
@@ -56,7 +56,7 @@ int main(int argc, char **argv)
     long sumResult = sum(vector1, nbMax);
     high_resolution_clock::time_point sumEnd = high_resolution_clock::now();
     time_duration = duration_cast<nanoseconds>(sumEnd -sumStart);
-    std::cout << "Duration NB_MAX" << std::endl << time_duration.count() << " " << nbMax << std::endl;
+    std::cout << "Duration NB_MAX cores" << std::endl << time_duration.count() << " " << nbMax << " " << nbCore << std::endl;
     std::cout << "Vector 1 sum result : " << sumResult << std::endl;
 
     return 0;
