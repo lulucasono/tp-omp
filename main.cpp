@@ -4,6 +4,7 @@
 #include <chrono>
 #include <ctime>
 #include <cstdlib>
+#include <omp.h>
 
 #define NB_MAX 100
 
@@ -19,6 +20,7 @@ int main(int argc, char **argv)
     if(argc < 3)
     {
     	std::cout<<"usage : app [number of cores] [array size]"<<std::endl;
+	return 1;
     }
     else
     {
@@ -30,7 +32,7 @@ int main(int argc, char **argv)
     int vector1[nbMax];
     int vector2[nbMax];
 
-    srand(time(NULL));
+    srand(13131313);
 
     for (i = 0; i < NB_MAX; i++)
     {
@@ -91,5 +93,12 @@ void add(int *vec1, int *vec2, int *ret, int length)
     for (i = 0; i < length; i++)
     {
         ret[i] = vec1[i] + vec2[i];
+    }
+}
+void paraAdd( int *vec1, int *vec2, int *ret, int length, int nbCore){
+    #pragma omp parallel for shared(ret)
+    for (int i = 0; i < length; i++)
+    {
+    	ret[i] = vec1[i] + vec2[i];
     }
 }
