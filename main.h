@@ -4,22 +4,23 @@
 /**
  * Affichage des termes d'un vecteur
  */
-void display(int *vec, int length);
+void display(double *vec, int length);
 
 /**
  * Somme des termes d'un vecteur
  */
-long sum(int *vec, int length);
+double sum(double *vec, int length);
+double paraSum(double * vec, int length);
 
 /**
  * Somme de deux vecteurs, le vecteur ret doit être initialise pour recevoir le resultat
  */
-void add(int *vec1, int *vec2, int *ret, int length);
+void add(double *vec1, double *vec2, double *ret, int length);
 
 /**
  * Somme de deux vecteurs, le vecteur ret doit être initialise pour recevoir le resultat
  */
-void paraAdd(const int *vec1, const int *vec2, int *ret, const int length);
-bool cpVec(const int *v1, const int *v2, const int length);
+void paraAdd(const double *vec1, const double *vec2, double *ret, const int length);
+bool cpVec(const double *v1, const double *v2, const int length);
 
 #endif // MAIN_H
