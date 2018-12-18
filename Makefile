@@ -1,7 +1,7 @@
 .PHONY: clean
 clean:
-	rm init main
-map: main.cpp main.h
-	g++ main.cpp -o map -DMAP=1 -fopenmp
-main: main.cpp main.h
-	g++ main.cpp -o main -fopenmp
+	rm init vecvec
+map: vecvec.cpp vecvec.h
+	g++ vecvec.cpp -o map -DMAP=1 -fopenmp
+vecvec: vecvec.cpp vecvec.h
+	g++ vecvec.cpp -o vecvec -fopenmp

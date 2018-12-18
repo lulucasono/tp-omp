@@ -1,4 +1,4 @@
-#include "main.h"
+#include "vecvec.h"
 
 #include <iostream>
 #include <chrono>
@@ -31,15 +31,15 @@ int main(int argc, char **argv)
 
 	omp_set_num_threads(nbCore);
 	// NB_MAX will be used as an arg
-	double vector1[nbMax];
-	double vector2[nbMax];
+	int vector1[nbMax];
+	int vector2[nbMax];
 
 	srand(1313);
 
 	for (i = 0; i < nbMax; i++)
 	{
-		vector1[i] = (double)rand()/RAND_MAX;
-		vector2[i] = (double)rand()/RAND_MAX;
+		vector1[i] = rand()%1000;
+		vector2[i] = rand()%1000;
 	}
 #ifdef MAP
 	std::cout<<"vector values"<<std::endl;
@@ -48,7 +48,7 @@ int main(int argc, char **argv)
 #endif
 
 	std::cout<<"sequential execution"<<std::endl;
-	double seqResult[nbMax];
+	int seqResult[nbMax];
 	time_point seqStart = clock::now();
 	add(vector1,vector2,seqResult,nbMax);
 	time_point seqEnd = clock::now();
@@ -59,7 +59,7 @@ int main(int argc, char **argv)
 #endif
 
 	std::cout<<"para add"<<std::endl;
-	double paraResult[nbMax];
+	int paraResult[nbMax];
 	time_point paraAddStart = clock::now();
 	paraAdd(vector1,vector2, paraResult, nbMax);
 	time_point paraAddEnd = clock::now();
@@ -77,13 +77,16 @@ int main(int argc, char **argv)
 	display(paraResult, nbMax);
 #endif
 
-	double sumSeq = sum(vector1,nbMax);
+	int sumSeq = sum(vector1,nbMax);
 	std::cout<<"sum seq = "<<sumSeq<<std::endl;
 
-	double sumPara = paraSum(vector1,nbMax);
+	int sumPara = criticalSum(vector1,nbMax);
 	std::cout<<"sum para = "<<sumPara<<std::endl;
 
-	if(cpVec(seqResult,paraResult, nbMax))
+	int sumRed = reductionSum(vector1,nbMax);
+	std::cout<<"sum para = "<<sumPara<<std::endl;
+
+	if(cpVec(seqResult,paraResult, nbMax) && sumSeq==sumRed)
 	{
 		std::cout<<"Ok"<<std::endl;
 	}
@@ -93,7 +96,7 @@ int main(int argc, char **argv)
 	}
 	return 0;
 }
-bool cpVec(const double *vec1, const double *vec2, const int length)
+bool cpVec(const int *vec1, const int *vec2, const int length)
 {
 	for(int i = 0 ; i< length; i++)
 	{
@@ -104,7 +107,7 @@ bool cpVec(const double *vec1, const double *vec2, const int length)
 	}
 	return true;
 }
-void paraAdd( const double *vec1, const double *vec2, double *ret, const int length)
+void paraAdd( const int *vec1, const int *vec2, int *ret, const int length)
 {
 	int i;
 	#pragma omp parallel for
@@ -113,7 +116,7 @@ void paraAdd( const double *vec1, const double *vec2, double *ret, const int len
 		ret[i] = vec1[i] + vec2[i];
 	}
 }
-void display(double *vec, int length)
+void display(int *vec, int length)
 {
 	int i;
 	for (i = 0; i < length; i++)
@@ -122,31 +125,62 @@ void display(double *vec, int length)
 	std::cout << std::endl;
 }
 
-double sum(double *vec, int length)
+int sum(int *vec, int length)
 {
 	int i;
-	double sum = 0.0;
+	int sum = 0.0;
 	for (i = 0; i < length; i++)
 	{
 		sum += vec[i];
 	}
 	return sum;
 }
-double paraSum(double *vec, int length)
+int paraSum(int *vec, int length)
 {
 	int i;
-	double sum = 0;
+	int sum = 0;
 
 #pragma omp parallel for shared(sum)
 	for (i = 0; i < length; i++)
 	{
 		sum += vec[i];
+		//race condition :)
 	}
 
 	return sum;
 }
 
-void add(double *vec1, double *vec2, double *ret, int length)
+//no race condition, but we should measure execution time
+int criticalSum(int *vec, int length)
+{
+	int i;
+	int sum = 0;
+
+#pragma omp parallel for shared(sum)
+	for (i = 0; i < length; i++)
+	{
+		#pragma omp critical
+		sum += vec[i];
+	}
+
+	return sum;
+}
+
+int reductionSum(int *vec, int length)
+{
+	int i;
+	int sum = 0;
+
+#pragma omp parallel for reduction(+:sum)
+	for (i = 0; i < length; i++)
+	{
+		sum += vec[i];
+	}
+
+	return sum;
+}
+
+void add(int *vec1, int *vec2, int *ret, int length)
 {
 	int i;
 
